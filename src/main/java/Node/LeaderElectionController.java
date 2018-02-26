@@ -104,6 +104,7 @@ public class LeaderElectionController {
 
     public void sendLeaderElection() throws MessagingException {
         //method 1 of broadcasting
+        //TODO THIS WILL SEND SAME MESSAGE TO ALL NEIGHBORS |NEIHBORS| TIMES
         thisNodeInfo.getNeighbors().parallelStream().forEach(neighbor -> {
             //TODO: change to trace
             log.error("--------creating leader election message");
@@ -114,7 +115,8 @@ public class LeaderElectionController {
                     vote.getMaxUidSeen(),
                     vote.getMaxDistanceSeen()
                     );
-            template.convertAndSend("/topic/leaderElection", message);
+//            template.convertAndSend("/topic/leaderElection", message);
+            template.convertAndSendToUser("node" + Integer.toString(neighbor.getUid()),"/topic/leaderElection", message);
             //TODO: change to trace
             log.error("--------after sending leader election message");
         });
