@@ -12,15 +12,18 @@ public class NodeStompSessionHandler extends StompSessionHandlerAdapter {
     private LeaderElectionController leaderElectionController;
     private BfsTreeController bfsTreeController;
     private CountDownLatch connectionTimeoutLatch;
+    private ThisNodeInfo thisNodeInfo;
 
-    public NodeStompSessionHandler(ApplicationContext context, CountDownLatch connectionTimeoutLatch) {
+    public NodeStompSessionHandler(ApplicationContext context, CountDownLatch connectionTimeoutLatch, ThisNodeInfo thisNodeInfo) {
         this.connectionTimeoutLatch = connectionTimeoutLatch;
         this.leaderElectionController = context.getBean(LeaderElectionController.class);
         this.bfsTreeController = context.getBean(BfsTreeController.class);
+        this.thisNodeInfo = thisNodeInfo;
     }
 
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+        session.subscribe("/user/" + thisNodeInfo.getUid() + "/queue/leaderElection", this);
         session.subscribe("/topic/leaderElection", this);
         session.subscribe("/topic/bfsTree", this);
         //we've connected so cancel the timeout

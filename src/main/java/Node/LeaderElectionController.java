@@ -114,9 +114,10 @@ public class LeaderElectionController {
                     vote.getMaxUidSeen(),
                     vote.getMaxDistanceSeen()
                     );
-            template.convertAndSend("/topic/leaderElection", message);
+            String destination = "/user/" + Integer.toString(neighbor.getUid()) + "/queue/leaderElection";
+            template.convertAndSend(destination, message);
             //TODO: change to trace
-            log.error("--------after sending leader election message");
+            log.error("--------after sending leader election message to " + destination);
         });
     }
 }

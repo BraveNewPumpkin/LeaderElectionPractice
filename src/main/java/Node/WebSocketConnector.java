@@ -39,7 +39,7 @@ public class WebSocketConnector {
         //lambda to open connection and start sessions
         Consumer<NodeInfo> sessionBuildingLambda = (neighbor -> {
             final CountDownLatch connectionTimeoutLatch = new CountDownLatch(1);
-            final StompSessionHandler sessionHandler = new NodeStompSessionHandler(context, connectionTimeoutLatch);
+            final StompSessionHandler sessionHandler = new NodeStompSessionHandler(context, connectionTimeoutLatch, thisNodeInfo);
             final List<Transport> transports = new ArrayList<>(1);
             final WebSocketClient client = new StandardWebSocketClient();
             transports.add(new WebSocketTransport(client));
